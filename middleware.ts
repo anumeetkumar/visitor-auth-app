@@ -4,31 +4,28 @@ import type { NextRequest } from "next/server"
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Public routes that don't require authentication
+  // Public routes
   const publicRoutes = ["/login", "/unauthorized"]
 
-  // API routes that don't require authentication
-  const publicApiRoutes = ["/api/auth/login", "/api/auth/refresh"]
-
-  // Check if the current path is public
-  if (publicRoutes.includes(pathname) || publicApiRoutes.includes(pathname)) {
+  // If current path is public, allow
+  if (publicRoutes.includes(pathname)) {
     return NextResponse.next()
   }
 
-  // For protected routes, we'll let the AuthGuard component handle the authentication
-  // This middleware just ensures proper routing
+  // Get auth token from cookies
+  const authToken = request.cookies.get("auth-token")?.value
+
+  // If no token → redirect to login
+  if (!authToken) {
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
+
+  // If token exists → allow
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
     "/((?!_next/static|_next/image|favicon.ico|public/).*)",
   ],
 }

@@ -20,17 +20,17 @@ export default function AuthGuard({ children, requiredRole = "employee", redirec
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!token) {
-        router.push(redirectTo)
-        return
-      }
+      // if (!token) {
+      //   router.push(redirectTo)
+      //   return
+      // }
 
-      const verifiedUser = verifyToken(token)
-      if (!verifiedUser) {
-        logout()
-        router.push(redirectTo)
-        return
-      }
+      // const verifiedUser = verifyToken(token)
+      // if (!verifiedUser) {
+      //   logout()
+      //   router.push(redirectTo)
+      //   return
+      // }
 
       // Check role permissions
       if (requiredRole && user) {

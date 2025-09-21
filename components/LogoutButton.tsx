@@ -15,9 +15,19 @@ export default function LogoutButton({ variant = "ghost", size = "default", clas
   const { logout } = useAuthStore()
   const router = useRouter()
 
-  const handleLogout = () => {
-    logout()
-    router.push("/login")
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear cookies
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      })
+    } catch (error) {
+      console.error("Logout error:", error)
+    } finally {
+      // Clear client-side store and redirect
+      logout()
+      router.push("/login")
+    }
   }
 
   return (
